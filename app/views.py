@@ -27,9 +27,17 @@ def about():
     """Render the website's about page."""
     return render_template('about.html')
 
+@app.route('/secure-page')
+@login_required
+def secure_page():
+    return render_template('secure_page.html')
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('secure-page'))
+
     form = LoginForm()
     if request.method == "POST" and form.validate_on_submit():
         # change this to actually validate the entire form submission
@@ -54,17 +62,16 @@ def login():
                     remember_me = True
 
             # get user id, load into session
-            login_user(user, remember=remember_me)
+                login_user(user, remember=remember_me)
 
             # remember to flash a message to the user
-            flash("Succesful login", "Succesful")
+                flash("Succesful login", "Succesful")
 
-            next_page = request.args.get('next')
-            return redirect(next_page or url_for("secure"))  # they should be redirected to a secure-page route instead
-            # return redirect(url_for("home"))  # they should be redirected to a secure-page route instead
-            else: 
-                
-            flash("Login Unsuccesful")
+                next_page = request.args.get('next')
+                return redirect(next_page or url_for("secure-page"))  # they should be redirected to a secure-page route instead
+            else:
+                flash('Username or Password is incorrect.', 'danger!') # return redirect(url_for("home"))  # they should be redirected to a secure-page route instead
+    
     return render_template("login.html", form=form)
 
 
