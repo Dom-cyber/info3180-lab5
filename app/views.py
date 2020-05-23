@@ -10,6 +10,7 @@ from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, current_user, login_required
 from app.forms import LoginForm
 from app.models import UserProfile
+from werkzeug.security import check_password_hash
 
 
 ###
@@ -68,7 +69,7 @@ def login():
                 flash("Succesful login", "Succesful")
 
                 next_page = request.args.get('next')
-                return redirect(next_page or url_for("secure-page"))  # they should be redirected to a secure-page route instead
+                return redirect(next_page or url_for("secure_page"))  # they should be redirected to a secure-page route instead
             else:
                 flash('Username or Password is incorrect.', 'danger!') # return redirect(url_for("home"))  # they should be redirected to a secure-page route instead
     
